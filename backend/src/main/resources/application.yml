@@ -1,0 +1,43 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: smartclean-backend
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/smartclean}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+mqtt:
+  broker:
+    url: ${MQTT_BROKER_URL:tcp://localhost:1883}
+    username: ${MQTT_USER:admin}
+    password: ${MQTT_PASS:admin}
+  client-id: smartclean-backend-dev
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:d29486c99c85fa809ef99797dc68a2bf8547cb04e463dc682b186b5104d4db84}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:3000,http://localhost:4200}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs

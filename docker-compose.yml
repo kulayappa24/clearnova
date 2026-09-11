@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: smartclean-postgres
+    environment:
+      POSTGRES_DB: smartclean
+      POSTGRES_USER: smartclean
+      POSTGRES_PASSWORD: smartclean_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartclean"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - smartclean-network
+
+  # Eclipse Mosquitto MQTT Broker
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: smartclean-mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./docker/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    healthcheck:
+      test: ["CMD", "mosquitto_sub", "-t", "$$SYS/#", "-C", "1", "-i", "healthcheck", "-W", "3"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks:
+      - smartclean-network
+
+  # Spring Boot Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: smartclean-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DATABASE_URL: jdbc:postgresql://postgres:5432/smartclean
+      DATABASE_USERNAME: smartclean
+      DATABASE_PASSWORD: smartclean_dev_password
+      JWT_SECRET: smartclean-dev-jwt-secret-key-minimum-32-characters-long-for-hmac
+      MQTT_BROKER_URL: tcp://mosquitto:1883
+      MQTT_USERNAME: ""
+      MQTT_PASSWORD: ""
+      AI_SERVICE_URL: http://ai-service:8000
+      APP_MODE: DEMO
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mosquitto:
+        condition: service_healthy
+    networks:
+      - smartclean-network
+
+  # Python AI Service
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: smartclean-ai-service
+    environment:
+      DEV_MODE: "true"
+      CONFIDENCE_THRESHOLD: "0.60"
+      MODEL_VERSION: waste-classifier-v1
+      LOG_PREDICTIONS: "true"
+    ports:
+      - "8000:8000"
+    networks:
+      - smartclean-network
+
+  # React Frontend (development)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: smartclean-frontend
+    environment:
+      VITE_API_BASE_URL: http://localhost:8080
+      VITE_WS_URL: ws://localhost:8080/ws
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - smartclean-network
+
+volumes:
+  postgres_data:
+  mosquitto_data:
+  mosquitto_log:
+
+networks:
+  smartclean-network:
+    driver: bridge
