@@ -45,26 +45,54 @@ const mainNavItems: NavItem[] = [
   { label: 'System Settings', path: '/settings', icon: Settings },
 ]
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+  isMobileOpen?: boolean
+  onClose?: () => void
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onClose }) => {
   const location = useLocation()
   const { user, logout } = useAuth()
 
   return (
-    <aside className="w-64 bg-[#062319] text-[#e2f1eb] flex flex-col h-screen shrink-0 select-none z-20 shadow-xl border-r border-[#0d402e]">
-      {/* Brand Header */}
-      <div className="h-20 flex items-center px-6 gap-3 border-b border-[#0d402e]">
-        <img 
-          src="/logo.svg" 
-          alt="ClearNova Logo" 
-          className="w-10 h-10 object-contain drop-shadow-md rounded-xl bg-emerald-950/40 p-0.5 border border-emerald-500/30" 
+    <>
+      {/* Mobile Overlay Backdrop */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-xs transition-opacity"
+          onClick={onClose}
         />
-        <div>
-          <h1 className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1">
-            <span>ClearNova</span>
-          </h1>
-          <p className="text-[10px] text-[#7ec2a6] font-mono tracking-wider">Clean Today • Green Tomorrow</p>
+      )}
+
+      <aside className={cn(
+        "w-64 bg-[#062319] text-[#e2f1eb] flex flex-col h-screen shrink-0 select-none z-50 shadow-2xl border-r border-[#0d402e] transition-transform duration-300 ease-in-out",
+        "fixed lg:static top-0 left-0 bottom-0",
+        isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      )}>
+        {/* Brand Header */}
+        <div className="h-20 flex items-center justify-between px-6 border-b border-[#0d402e]">
+          <div className="flex items-center gap-3">
+            <img 
+              src="/logo.svg" 
+              alt="ClearNova Logo" 
+              className="w-10 h-10 object-contain drop-shadow-md rounded-xl bg-emerald-950/40 p-0.5 border border-emerald-500/30" 
+            />
+            <div>
+              <h1 className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1">
+                <span>ClearNova</span>
+              </h1>
+              <p className="text-[10px] text-[#7ec2a6] font-mono tracking-wider">Clean Today • Green Tomorrow</p>
+            </div>
+          </div>
+          {onClose && (
+            <button 
+              onClick={onClose}
+              className="lg:hidden p-1.5 text-emerald-400 hover:text-white rounded-lg hover:bg-[#0e4d37] transition-colors"
+            >
+              ✕
+            </button>
+          )}
         </div>
-      </div>
 
       {/* Nav List */}
       <div className="flex-1 overflow-y-auto py-5 px-4 space-y-1.5">
@@ -75,6 +103,7 @@ export const Sidebar: React.FC = () => {
             <Link
               key={item.path}
               to={item.path}
+              onClick={onClose}
               className={cn(
                 'flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all duration-200 group',
                 isActive
@@ -136,5 +165,6 @@ export const Sidebar: React.FC = () => {
         </div>
       )}
     </aside>
+    </>
   )
 }
