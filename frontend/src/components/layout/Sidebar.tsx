@@ -53,9 +53,11 @@ export const Sidebar: React.FC = () => {
     <aside className="w-64 bg-[#062319] text-[#e2f1eb] flex flex-col h-screen shrink-0 select-none z-20 shadow-xl border-r border-[#0d402e]">
       {/* Brand Header */}
       <div className="h-20 flex items-center px-6 gap-3 border-b border-[#0d402e]">
-        <div className="w-10 h-10 rounded-xl bg-[#0e4d37] border border-[#1ab882]/40 flex items-center justify-center text-[#10b981] shadow-md shrink-0">
-          <Leaf className="w-6 h-6 text-[#10b981] animate-pulse" />
-        </div>
+        <img 
+          src="/logo.svg" 
+          alt="ClearNova Logo" 
+          className="w-10 h-10 object-contain drop-shadow-md rounded-xl bg-emerald-950/40 p-0.5 border border-emerald-500/30" 
+        />
         <div>
           <h1 className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1">
             <span>ClearNova</span>

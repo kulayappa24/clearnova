@@ -55,7 +55,7 @@ export const HeroHeader: React.FC<HeroHeaderProps> = ({ title, subtitle, tag = '
         {/* Hero Visualizer Card & Action Buttons */}
         <div className="flex flex-col sm:flex-row lg:flex-col items-center lg:items-end gap-3 shrink-0 w-full lg:w-auto">
           <div className="p-4 rounded-2xl bg-white border border-emerald-300 flex items-center gap-3 shadow-md w-full sm:w-auto">
-            <img src="/logo.png" alt="ClearNova Logo" className="w-12 h-12 object-contain rounded-xl border-2 border-emerald-300 p-0.5 bg-white shadow-sm animate-float" />
+            <img src="/logo.svg" alt="ClearNova Logo" className="w-12 h-12 object-contain rounded-xl border-2 border-emerald-300 p-0.5 bg-white shadow-sm animate-float" />
             <div>
               <div className="text-xs font-black text-slate-900">4-Stream AI Segregation</div>
               <div className="text-[10px] font-mono text-emerald-900 font-extrabold">🟢 Wet • 🔵 Dry • 🟡 Sanit • 🔴 Special</div>

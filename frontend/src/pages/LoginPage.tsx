@@ -45,7 +45,7 @@ export const LoginPage: React.FC = () => {
         {/* Brand Logo */}
         <div className="text-center space-y-2">
           <div className="inline-flex p-2 bg-white border-2 border-emerald-300 rounded-3xl shadow-md mb-2">
-            <img src="/logo.png" alt="ClearNova Logo" className="w-16 h-16 object-contain" />
+            <img src="/logo.svg" alt="ClearNova Logo" className="w-16 h-16 object-contain" />
           </div>
           <h1 className="text-4xl font-black text-slate-900 tracking-tight">ClearNova</h1>
           <p className="text-xs text-slate-600 font-semibold">AI + IoT Intelligent Waste Segregation & Management</p>
