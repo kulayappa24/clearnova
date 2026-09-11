@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(import.meta.dirname || '.', './src'),
     },
   },
   server: {
@@ -20,7 +20,9 @@ export default defineConfig({
     },
   },
   build: {
-    target: 'es2022',
+    target: ['es2020', 'chrome87', 'edge88', 'firefox78', 'safari14'],
+    cssTarget: ['chrome87', 'edge88', 'firefox78', 'safari14'],
     sourcemap: true,
   },
 })
+
